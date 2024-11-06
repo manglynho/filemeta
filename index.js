@@ -7,7 +7,8 @@ const path = require('path');
 const storage = multer.diskStorage({
   destination: './uploads/',
   filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    console.log(file);
+    cb(null,file.originalname);
   }
 });
 
@@ -33,14 +34,14 @@ app.post('/api/fileanalyse', (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
+    let fileNameWithoutExt = path.parse(req.file.originalname).name;
     res.json({
-      fileName: req.file.filename,
-      fileType: req.file.mimetype,
-      fileSize: req.file.size
+      name: fileNameWithoutExt,
+      type: req.file.mimetype,
+      size: req.file.size
     });
   });
 });
-
 
 const port = process.env.PORT || 3000;
 app.listen(port, function () {
